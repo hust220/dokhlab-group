@@ -15,9 +15,25 @@
     </div>
 
     <div style="background-color: white; height: 144px; width: 100%">
+      <div style="padding-top:24px;padding-bottom:16px;overflow-x:hidden;overflow-y:auto">
+        <div style="display: flex; width: 100%">
+          <div style="font-size: 20px; font-weight: 400; line-height: 16px; color: #212121; width: 48px; padding-left: 16px; align-items: center; display: flex">
+            <i class="el-icon-time"></i>
+          </div>
+          <div style="font-size: 14px; font-weight: 400; line-height: 16px; color: #212121">
+            <div>
+              {{`${formatTime(eventToShow.start, 'dddd, MMMM D')}`}}
+            </div>
+            <div>
+              {{`${formatTime(eventToShow.start, 'HH:mm')} - ${formatTime(eventToShow.end, 'HH:mm')}`}}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- New Event Dialog -->
   <el-dialog title="New Event" :visible.sync="newEventDialogVisible">
     <el-form :model="newEvent" label-width="80px">
 
@@ -28,12 +44,12 @@
 
       <!-- Start Time -->
       <el-form-item label="Start Time">
-        <el-time-picker arrow-control v-model="newEvent.start" :picker-options="{ selectableRange: '8:00:00 - 20:30:00' }" placeholder="Start Time"></el-time-picker>
+        <el-time-picker v-model="newEvent.start" :picker-options="{ selectableRange: '8:00:00 - 20:30:00' }" placeholder="Start Time"></el-time-picker>
       </el-form-item>
 
       <!-- End Time -->
       <el-form-item label="End Time">
-        <el-time-picker arrow-control v-model="newEvent.end" :picker-options="{ selectableRange: '8:00:00 - 20:30:00' }" placeholder="End Time"></el-time-picker>
+        <el-time-picker v-model="newEvent.end" :picker-options="{ selectableRange: '8:00:00 - 20:30:00' }" placeholder="End Time"></el-time-picker>
       </el-form-item>
 
       <!-- All Day -->
@@ -144,7 +160,9 @@ export default {
         left: '0px',
         top: '0px',
         zIndex: '99',
-        display: 'none'
+        display: 'none',
+        boxShadow: '0 24px 38px 3px rgba(0,0,0,0.14),0 9px 46px 8px rgba(0,0,0,0.12),0 11px 15px -7px rgba(0,0,0,0.2)',
+        borderRadius: '2px'
       },
 
       newEvent: {
@@ -190,10 +208,10 @@ export default {
         },
 
         eventClick (calEvent, jsEvent, view) {
-          console.log(calEvent)
-          console.log(jsEvent.target)
-          alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY)
-          alert('View: ' + view.name)
+//          console.log(calEvent)
+//          console.log(jsEvent.target)
+//          alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY)
+//          alert('View: ' + view.name)
           v.eventToShow = calEvent
           var e = jsEvent.target.closest('td')
           var p = e.getBoundingClientRect()
@@ -214,6 +232,10 @@ export default {
   },
 
   methods: {
+    formatTime (t, format) {
+      return moment(t).format(format)
+    },
+
     redirect (url) {
       window.location.href = url
     },
@@ -234,6 +256,16 @@ export default {
       }
 
       v.events.push(newEvent)
+
+      // Post the new event to the database
+//      axios({
+//        method: 'post',
+//        url: v.$config.HOST + '/events/actions/events.php'
+//      }).then(response => {
+//        for (var i in response.data) {
+//          v.events.push(response.data[i])
+//        }
+//      })
     }
   },
 
@@ -259,6 +291,16 @@ export default {
     var left = (document.body.clientWidth - 1000) / 2
     v.top = (top < 0 ? 0 : top)
     v.left = (left < 0 ? 0 : left)
+
+    // Fetch events
+    axios({
+      method: 'get',
+      url: v.$config.HOST + '/events/actions/events.php'
+    }).then(response => {
+      for (var i in response.data) {
+        v.events.push(response.data[i])
+      }
+    })
 
     // Auto-Login
     axios({
@@ -521,12 +563,12 @@ a:visited.jn-button {
 }
 
 .circle {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  font-size: 15px;
+  font-size: 20px;
   color: #fff;
-  line-height: 30px;
+  line-height: 40px;
   text-align: center;
   /*
   background: #000
