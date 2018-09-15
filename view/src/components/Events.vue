@@ -218,7 +218,9 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="stylus" scoped>
+
+test-color = #22A7E8
 
 .event-popup-menu-icon {
   float: right;
@@ -226,7 +228,7 @@ export default {
 }
 
 .event-popup-menu-icon:hover {
-  background-color: #22A7E8;
+  background-color: test-color;
 }
 
 .circle {

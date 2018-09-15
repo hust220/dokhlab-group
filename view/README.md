@@ -1,6 +1,6 @@
-# Allos
+# Events
 
-> Allostery
+> Events
 
 ## Build Setup
 
