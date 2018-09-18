@@ -1,21 +1,54 @@
 <template>
-<div style="font-size:13px;font-family: Geneva, arial, helvetica, sans-serif;">
-  <div style="margin-top:20px;width:100%;border:1px solid #BBBBBB;padding:10px;margin-left:10px">
+<div>
+
+  <!-- Row Update Dialog -->
+  <el-dialog title="Update" :visible.sync="updateDialogVisible">
+    <div style="height: 500px; overflow-y: auto">
+      <el-form :model="rowToUpdate" label-width="80px">
+
+        <!-- Event Title -->
+        <el-form-item v-for="(col, name) in rowToUpdate" :key="name" :label="name">
+          <el-input v-model="rowToUpdate[name]" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="updateDialogVisible = false">Cancel</el-button>
+      <el-button type="primary" @click="updateDialogVisible = false; update()">Update</el-button>
+    </div>
+  </el-dialog>
+
+
+<div style="font-size:13px;font-family: Geneva, arial, helvetica, sans-serif;border:1px solid #BBBBBB;width:800px;overflow:scroll;position:absolute;top:160px;bottom:50px">
+  <div style="margin-top:20px;padding:0px;margin-left:10px">
     <ul v-for="tableName in tableNames">
-      <h3>{{tableName}}</h3>
-      <div v-if="tables[tableName]">
-      {{tables[tableName].length}}
-      <!--
-      <li v-for="(row, rowIndex) in tables[tableName]">
-      hi
-      <div v-if="tables[tableName][rowIndex-1]">
-        <input v-for="(col,name) in tables[tableName][rowIndex-1]" type='text' v-model='tables[tableName][rowIndex-1][name]' />
-      </div>
-      </li>
-      -->
-      </div>
+      <folder>
+        <b>{{tableName}}</b>
+
+        <div slot="items">
+          <table style="border-collapse: collapse;" v-if="tables[tableName]">
+            <tr v-if="tables[tableName].length>0">
+              <th></th>
+              <th v-for="(col,name) in tables[tableName][0]" v-text="name"></th>
+            </tr>
+            <tr v-for="(row, rowIndex) in tables[tableName]">
+              <td>
+                <div class="table-cell">
+                  <i @click="rowToUpdate=tables[tableName][rowIndex];updateDialogVisible=true" class="el-icon-edit button"></i><i class="el-icon-delete button"></i>
+                </div>
+              </td>
+              <td v-for="(col,name) in tables[tableName][rowIndex]">
+                <div class="table-cell" v-text='tables[tableName][rowIndex][name]'>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </folder>
     </ul>
   </div>
+</div>
 </div>
 </template>
 
@@ -28,13 +61,22 @@ export default {
 
   data () {
     return {
-      tableNames: ['mems', 'pubs', 'users'],
+      rowToUpdate: {},
+
+      updateDialogVisible: false,
 
       tables: {
         mems: [],
         pubs: [],
         users: []
       }
+    }
+  },
+
+  computed: {
+    tableNames () {
+      var v = this
+      return Object.keys(v.tables)
     }
   },
 
@@ -46,7 +88,15 @@ export default {
         method: 'get',
         url: v.$config.HOST + `/dokhlab/actions/table.php?name=${name}`
       }).then(response => {
-        v.tables[name] = response.data
+//        console.log(response.data)
+//        console.log('hi')
+        console.log(v.tables)
+//        console.log(Object.keys(v.tables))
+        v.tables[name] = []
+        for (var i = 0; i < response.data.length; i++) {
+//          console.log(response.data[i])
+          v.tables[name].push(response.data[i])
+        }
       }).catch(() => {
         alert(`Fetch Table ${name} failed!`)
       })
@@ -60,7 +110,8 @@ export default {
       bus.$emit('switch-router', 'Members')
     })
 
-    v.tables = {}
+    console.log(Object.keys(v.tables))
+//    v.tables = {}
     for (var i in v.tableNames) {
       v.getTable(v.tableNames[i])
     }
@@ -97,6 +148,22 @@ img {
   padding:5px 10px;
   text-align: justify;
   text-justify: inter-word;
+}
+
+.table-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  min-width:50px;
+  max-width:200px;
+}
+
+.button {
+  cursor: pointer;
+}
+
+table tr:nth-child(even) {
+  background-color: #f2f2f2
 }
 
 </style>

@@ -1,8 +1,10 @@
 <template>
-  <li class="folder">
-    <i v-if="folded" class="el-icon-plus"></i>
-    <i class="el-icon-minus" v-else></i>
-    <span @click="folded=(!folded)"><slot></slot></span>
+  <li>
+    <span @click="folded=(!folded)" class="folder">
+      <i v-if="folded" class="el-icon-plus"></i>
+      <i class="el-icon-minus" v-else></i>
+      <slot></slot>
+    </span>
 
     <template v-if="!folded">
       <slot name='items'></slot>
