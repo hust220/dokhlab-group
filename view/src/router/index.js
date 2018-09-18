@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 import Research from '@/components/Research'
 import Publications from '@/components/Publications'
+import Members from '@/components/Members'
+import Management from '@/components/Management'
 import Events from '@/components/Events'
 import NewTask from '@/components/NewTask'
 import TaskManagement from '@/components/TaskManagement'
@@ -34,6 +36,18 @@ export default new Router({
       path: '/publications',
       name: 'Publications',
       component: Publications
+    },
+
+    {
+      path: '/members',
+      name: 'Members',
+      component: Members
+    },
+
+    {
+      path: '/management',
+      name: 'Management',
+      component: Management
     },
 
     {

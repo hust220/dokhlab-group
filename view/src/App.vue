@@ -13,35 +13,35 @@
         <img src="./assets/menuimages/menu_01.jpg" alt="" width="32" height="30"></td>
       <td>
         <a href="/#/home" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_02','','menuimages/menu_h_02.jpg',1);">
-          <img name="menu_a_02" src="http://www.jianopt.com/dokhlab/menuimages/menu_a_02.jpg" alt="Home" width="63" height="30" border="0">
+          <img name="menu_a_02" src="./assets/menuimages/menu_a_02.jpg" alt="Home" width="63" height="30" border="0">
         </a>
       </td>
       <td>
         <img src="./assets/menuimages/menu_03.jpg" alt="" width="21" height="30"></td>
       <td>
         <a href="/#/members" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_04','','menuimages/menu_h_04.jpg',1);">
-          <img name="menu_a_04" src="http://www.jianopt.com/dokhlab/menuimages/menu_a_04.jpg" alt="Members" width="100" height="30" border="0">
+          <img name="menu_a_04" src="./assets/menuimages/menu_a_04.jpg" alt="Members" width="100" height="30" border="0">
       </a></td>
 
       <td>
         <img src="./assets/menuimages/menu_05.jpg" alt="" width="17" height="30"></td>
       <td>
         <a href="/#/research" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_06','','menuimages/menu_h_06.jpg',1);">
-          <img name="menu_a_06" src="http://www.jianopt.com/dokhlab/menuimages/menu_a_06.jpg" alt="Research" width="94" height="30" border="0">
+          <img name="menu_a_06" src="./assets/menuimages/menu_a_06.jpg" alt="Research" width="94" height="30" border="0">
       </a></td>
 
       <td>
         <img src="./assets/menuimages/menu_07.jpg" alt="" width="25" height="30"></td>
       <td>
         <a href="/#/publications" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_08','','menuimages/menu_h_08.jpg',1);">
-          <img name="menu_a_08" src="http://www.jianopt.com/dokhlab/menuimages/menu_a_08.jpg" alt="Publications" width="129" height="30" border="0">
+          <img name="menu_a_08" src="./assets/menuimages/menu_a_08.jpg" alt="Publications" width="129" height="30" border="0">
       </a></td>
 
       <td>
         <img src="./assets/menuimages/menu_09.jpg" alt="" width="25" height="30"></td>
       <td>
         <a href="/#/tools" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_10','','menuimages/menu_h_10.jpg',1);">
-          <img name="menu_a_10" src="http://www.jianopt.com/dokhlab/menuimages/menu_a_10.jpg" alt="Tools" width="62" height="30" border="0">
+          <img name="menu_a_10" src="./assets/menuimages/menu_a_10.jpg" alt="Tools" width="62" height="30" border="0">
       </a></td>
 
       <td>
@@ -49,7 +49,7 @@
       </td>
       <td>
         <a href="/#/events" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_12','','menuimages/menu_h_12.jpg',1);">
-          <img name="menu_a_12" src="http://www.jianopt.com/dokhlab/menuimages/menu_a_12.jpg" alt="Events" width="83" height="30" border="0">
+          <img name="menu_a_12" src="./assets/menuimages/menu_a_12.jpg" alt="Events" width="83" height="30" border="0">
         </a>
       </td>
 
@@ -57,7 +57,7 @@
         <img src="./assets/menuimages/menu_13.jpg" alt="" width="19" height="30"></td>
       <td>
         <a href="/#/search" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_14','','menuimages/menu_h_14.jpg',1);">
-          <img name="menu_a_14" src="http://www.jianopt.com/dokhlab/menuimages/menu_a_14.jpg" alt="Search" width="74" height="30" border="0">
+          <img name="menu_a_14" src="./assets/menuimages/menu_a_14.jpg" alt="Search" width="74" height="30" border="0">
       </a></td>
 
       <td>
