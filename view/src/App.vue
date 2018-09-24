@@ -1,9 +1,20 @@
 <template>
-<div>
+<div :style="appStyle">
+  <!-- User Dialog -->
+  <user :visible.sync="userVisible"></user>
+
   <!-- Head pictures -->
   <div style="width:800px; background-color: #575757">
     <div style="width:800px;height:80px"><img src="./assets/top/top-bg7.jpg"></div>
-    <div style="width:800px;height:30px"><img src="./assets/Head.gif"></div>
+    <div style="position:relative;width:800px;height:30px">
+      <div style="position:absolute;left:28px;bottom:5px;color:white;font-size:11px">
+        <span v-if="!$store.state.user" @click="userVisible=true" class="user-button">Login</span>
+        <span v-else @click="userVisible=true" v-text="$store.state.user.username" class="user-button"></span>
+
+        <span style="padding-left:20px" v-if="$store.state.user" class="user-button"><a style="color:white" href="#/management">Management</a></span>
+      </div>
+      <img src="./assets/Head.gif">
+    </div>
   </div>
 
   <!-- Menu -->
@@ -12,35 +23,35 @@
       <td>
         <img src="./assets/menuimages/menu_01.jpg" alt="" width="32" height="30"></td>
       <td>
-        <a href="/#/home" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_02','','menuimages/menu_h_02.jpg',1);">
+        <a href="#/home" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_02','','menuimages/menu_h_02.jpg',1);">
           <img name="menu_a_02" src="./assets/menuimages/menu_a_02.jpg" alt="Home" width="63" height="30" border="0">
         </a>
       </td>
       <td>
         <img src="./assets/menuimages/menu_03.jpg" alt="" width="21" height="30"></td>
       <td>
-        <a href="/#/members" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_04','','menuimages/menu_h_04.jpg',1);">
+        <a href="#/members" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_04','','menuimages/menu_h_04.jpg',1);">
           <img name="menu_a_04" src="./assets/menuimages/menu_a_04.jpg" alt="Members" width="100" height="30" border="0">
       </a></td>
 
       <td>
         <img src="./assets/menuimages/menu_05.jpg" alt="" width="17" height="30"></td>
       <td>
-        <a href="/#/research" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_06','','menuimages/menu_h_06.jpg',1);">
+        <a href="#/research" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_06','','menuimages/menu_h_06.jpg',1);">
           <img name="menu_a_06" src="./assets/menuimages/menu_a_06.jpg" alt="Research" width="94" height="30" border="0">
       </a></td>
 
       <td>
         <img src="./assets/menuimages/menu_07.jpg" alt="" width="25" height="30"></td>
       <td>
-        <a href="/#/publications" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_08','','menuimages/menu_h_08.jpg',1);">
+        <a href="#/publications" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_08','','menuimages/menu_h_08.jpg',1);">
           <img name="menu_a_08" src="./assets/menuimages/menu_a_08.jpg" alt="Publications" width="129" height="30" border="0">
       </a></td>
 
       <td>
         <img src="./assets/menuimages/menu_09.jpg" alt="" width="25" height="30"></td>
       <td>
-        <a href="/#/tools" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_10','','menuimages/menu_h_10.jpg',1);">
+        <a href="#/tools" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_10','','menuimages/menu_h_10.jpg',1);">
           <img name="menu_a_10" src="./assets/menuimages/menu_a_10.jpg" alt="Tools" width="62" height="30" border="0">
       </a></td>
 
@@ -48,7 +59,7 @@
         <img src="./assets/menuimages/menu_11.jpg" alt="" width="24" height="30">
       </td>
       <td>
-        <a href="/#/events" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_12','','menuimages/menu_h_12.jpg',1);">
+        <a href="#/events" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_12','','menuimages/menu_h_12.jpg',1);">
           <img name="menu_a_12" src="./assets/menuimages/menu_a_12.jpg" alt="Events" width="83" height="30" border="0">
         </a>
       </td>
@@ -56,7 +67,7 @@
       <td>
         <img src="./assets/menuimages/menu_13.jpg" alt="" width="19" height="30"></td>
       <td>
-        <a href="/#/search" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_14','','menuimages/menu_h_14.jpg',1);">
+        <a href="#/search" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('menu_a_14','','menuimages/menu_h_14.jpg',1);">
           <img name="menu_a_14" src="./assets/menuimages/menu_a_14.jpg" alt="Search" width="74" height="30" border="0">
       </a></td>
 
@@ -67,7 +78,7 @@
   </table>
 
   <div style="width:800px">
-    <keep-alive exclude="Task">
+    <keep-alive exclude="Home">
       <router-view/>
     </keep-alive>
   </div>
@@ -88,7 +99,36 @@ export default {
 
   data () {
     return {
-      formLabelWidth: 150
+      formLabelWidth: 150,
+      userVisible: false
+    }
+  },
+
+  computed: {
+    appStyle () {
+      var v = this
+      var style = {
+        width: '800px'
+      }
+      var align
+      try {
+        align = v.frontConfig.layout.align
+      } catch (error) {
+        align = 'left'
+      }
+      if (align === 'center') {
+        style.margin = '0px auto'
+      } else if (align === 'right') {
+        style.marginLeft = 'auto'
+        style.marginRight = '0px'
+      } else {
+        style.marginLeft = '0px'
+      }
+      return style
+    },
+
+    frontConfig () {
+      return this.$store.state.frontConfig
     }
   },
 
@@ -108,6 +148,20 @@ export default {
   mounted () {
     var v = this
 
+    // Initialize front-end configuration
+    console.log('Init website front-end configuration...')
+    axios({
+      method: 'get',
+      url: v.$config.HOST + `/dokhlab/actions/front-config.php`,
+      withCredentials: true
+    }).then(response => {
+      v.$store.commit('initFrontConfig', response.data)
+
+      console.log(JSON.stringify(response.data))
+    }).catch(() => {
+      alert(`Could not fetch website front-end configuration`)
+    })
+
     bus.$on('switch-router', (name) => {
       v.active = name
     })
@@ -122,12 +176,15 @@ export default {
     // Auto-Login
     axios({
       method: 'get',
-      url: v.$config.HOST + '/allos/actions/user.php'
+      url: v.$config.HOST + '/dokhlab/actions/user.php',
+      withCredentials: true
     }).then(response => {
       var r = response.data
       if (r.status === 1) {
         this.$store.commit('login', r.user)
       }
+    }).catch(error => {
+      alert(error.response.headers)
     })
   }
 }
@@ -163,10 +220,6 @@ body {
   width: 100%;
   height: 100%;
   position: relative;
-}
-
-* a.allos-button {
-  color: #67c23a;
 }
 
 table {
@@ -368,6 +421,14 @@ color: #b5e7a0;
 
 a:visited.jn-button {
   color: #67c23a;
+}
+
+.user-button {
+  cursor: pointer;
+}
+
+.user-button:hover {
+  text-decoration: underline;
 }
 
 </style>

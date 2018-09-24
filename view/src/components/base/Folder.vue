@@ -1,15 +1,15 @@
 <template>
-  <li>
-    <span @click="folded=(!folded)" class="folder">
-      <i v-if="folded" class="el-icon-plus"></i>
+  <div>
+    <span @click="isFolded=(!isFolded)" class="folder">
+      <i v-if="isFolded" class="el-icon-plus"></i>
       <i class="el-icon-minus" v-else></i>
       <slot></slot>
     </span>
 
-    <template v-if="!folded">
+    <template v-if="!isFolded">
       <slot name='items'></slot>
     </template>
-  </li>
+  </div>
 </template>
 
 <script>
@@ -18,6 +18,7 @@ export default {
 
   data () {
     return {
+      isFolded: this.folded
     }
   },
 
@@ -26,6 +27,7 @@ export default {
       default: true
     }
   }
+
 }
 </script>
 

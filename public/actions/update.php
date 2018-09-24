@@ -2,21 +2,36 @@
 
 require_once('utils.php');
 
-admin(function ($conn) {
+admin_do(function ($conn) {
+  $return = [];
+
   $conds = [];
   foreach ($_POST as $k => $v) {
-    if ($k == 'table') {
+    if ($k == '__table') {
       $table = $v;
-    } elseif ($k == 'id') {
-      $id = $v;
+    } elseif ($k == '__key') {
+      $key = $v;
     } else {
-      $q = $conn->quote($v);
-      $conds[] = "$k=$q";
+      if ($v != '') {
+        if ($k == 'password' || $k == 'passwd') {
+          $v = md5($v);
+        }
+
+        $return[$k] = $v;
+
+        $q = $conn->quote($v);
+        if ($k == $key) {
+          $value = $q;
+        } else {
+          $conds[] = "$k=$q";
+        }
+      }
     }
   }
   $condition = implode(", ", $conds);
-  $query = "update $table set $condition where id='$id'";
+  $query = "update $table set $condition where $key=$value";
   $conn->exec($query);
-  echo "Update successfully";
+
+  echo json_encode($return);
 });
 

@@ -8,7 +8,7 @@
     <!--
     <iframe ref="frame" style="width:800px" src="https://docs.google.com/document/d/e/2PACX-1vSkcgDSUJqQTPuskj-GhPdeuD4xr-Y-MZuuIDKa32MsJ-1m0Hdhr53ybL9-Co7RP-n_JsK8R7R0EcIr/pub?embedded=true" frameborder="0" scrolling="no" @load="resizeIframe()" ></iframe>
     -->
-  <iframe ref="frame" style="width:800px;height:100%" src="http://jianopt.com/dokhlab/actions/research.php" frameborder="0" @load="resizeIframe()" ></iframe>
+  <iframe ref="frame" style="width:800px;height:100%" :src="'http://jianopt.com/dokhlab/actions/proxy.php?src='+frontConfig.research.src" frameborder="0" @load="resizeIframe()" ></iframe>
   <!--
   <div v-html="content"></div>
   -->
@@ -25,6 +25,12 @@ export default {
   data () {
     return {
       content: ''
+    }
+  },
+
+  computed: {
+    frontConfig () {
+      return this.$store.state.frontConfig
     }
   },
 

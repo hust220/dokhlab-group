@@ -83,7 +83,8 @@ export default {
       v.$store.commit('logout')
       axios({
         method: 'get',
-        url: v.$config.HOST + '/allos/actions/logout.php'
+        url: v.$config.HOST + '/dokhlab/actions/logout.php',
+        withCredentials: true
       }).then(response => {
         console.log('Logout...')
       }).catch(() => {
@@ -100,9 +101,10 @@ export default {
 
       axios({
         method: 'post',
-        url: v.$config.HOST + '/allos/actions/login.php',
+        url: v.$config.HOST + '/dokhlab/actions/login.php',
         data: formData,
-        config: {headers: {'Content-Type': 'multipart/form-data'}}
+        config: {headers: {'Content-Type': 'multipart/form-data'}},
+        withCredentials: true
       }).then(response => {
         var r = response.data
         if (r.status === 1) {

@@ -154,10 +154,10 @@
             <more-menuitem>
               <div>Download</div>
               <more-submenu>
-                <more-menuitem :href="$config.HOST + `/allos/actions/file.php?name=${task.pse}&format=`">
+                <more-menuitem :href="$config.HOST + `/dokhlab/actions/file.php?name=${task.pse}&format=`">
                   Pymol Session
                 </more-menuitem>
-                <more-menuitem :href="$config.HOST + `/allos/actions/file.php?name=${task.output}&format=`">
+                <more-menuitem :href="$config.HOST + `/dokhlab/actions/file.php?name=${task.output}&format=`">
                   Paths Info
                 </more-menuitem>
               </more-submenu>
@@ -168,7 +168,7 @@
       </div>
 
       <!-- download -->
-      <div class="download-button" v-show="figureType===2"><a :href="$config.HOST + `/allos/actions/file.php?name=${task.bfactor}&format=`">Download</a></div>
+      <div class="download-button" v-show="figureType===2"><a :href="$config.HOST + `/dokhlab/actions/file.php?name=${task.bfactor}&format=`">Download</a></div>
 
       <div style="clear: both"></div>
     </div>
@@ -221,17 +221,17 @@
   <el-dialog :title="'Log of Task '+id" :visible.sync="taskPanelVisible" width="40%">
     <table>
       <tr><td>Task ID</td><td>{{task.id}}</td></tr>
-      <tr><td>Structure</td><td><a :href="$config.HOST + `/allos/actions/file.php?name=${task.receptor}&format=`">{{task.receptor}}</a></td></tr>
+      <tr><td>Structure</td><td><a :href="$config.HOST + `/dokhlab/actions/file.php?name=${task.receptor}&format=`">{{task.receptor}}</a></td></tr>
       <tr><td>Source</td><td>{{`${task.source_chain}-${task.source_residue}`}}</td></tr>
       <tr><td>Target</td><td>{{`${task.target_chain}-${task.target_residue}`}}</td></tr>
       <tr><td>Threshold</td><td>{{task.threshold}}</td></tr>
       <tr><td>Cutoff</td><td>{{task.cutoff}}</td></tr>
       <tr><td>K</td><td>{{task.k}}</td></tr>
       <tr><td>Path Cutoff</td><td>{{task.path_cutoff}}</td></tr>
-      <tr><td>Bfactor Structure</td><td><a :href="$config.HOST + `/allos/actions/file.php?name=${task.bfactor}&format=`">{{task.bfactor}}</a></td></tr>
-      <tr><td>Dendrogram</td><td><a :href="$config.HOST + `/allos/actions/file.php?name=${task.dendrogram}&format=`">{{task.dendrogram}}</a></td></tr>
-      <tr><td>Pymol Session</td><td><a :href="$config.HOST + `/allos/actions/file.php?name=${task.pse}&format=`">{{task.pse}}</a></td></tr>
-      <tr><td>Paths Info</td><td><a :href="$config.HOST + `/allos/actions/file.php?name=${task.output}&format=`">{{task.output}}</a></td></tr>
+      <tr><td>Bfactor Structure</td><td><a :href="$config.HOST + `/dokhlab/actions/file.php?name=${task.bfactor}&format=`">{{task.bfactor}}</a></td></tr>
+      <tr><td>Dendrogram</td><td><a :href="$config.HOST + `/dokhlab/actions/file.php?name=${task.dendrogram}&format=`">{{task.dendrogram}}</a></td></tr>
+      <tr><td>Pymol Session</td><td><a :href="$config.HOST + `/dokhlab/actions/file.php?name=${task.pse}&format=`">{{task.pse}}</a></td></tr>
+      <tr><td>Paths Info</td><td><a :href="$config.HOST + `/dokhlab/actions/file.php?name=${task.output}&format=`">{{task.output}}</a></td></tr>
       <tr></tr>
     </table>
     <span slot="footer" class="dialog-footer">
@@ -469,7 +469,7 @@ export default {
 
       axios({
         method: 'post',
-        url: v.$config.HOST + '/allos/actions/submit2.php',
+        url: v.$config.HOST + '/dokhlab/actions/submit2.php',
         data: formData,
         config: {headers: {'Content-Type': 'multipart/form-data'}}
       }).then(response => {
@@ -557,17 +557,17 @@ export default {
       v.representationVisibilities = {}
 
       console.log(`Loading Task ${v.id}...`)
-      axios.get(v.$config.HOST + '/allos/actions/task.php?id=' + v.id).then(response => {
+      axios.get(v.$config.HOST + '/dokhlab/actions/task.php?id=' + v.id).then(response => {
         v.task = response.data
         console.log(JSON.stringify(v.task))
 
         console.log(`Loading Task Log...`)
-        axios.get(v.$config.HOST + `/allos/actions/log.php?id=${v.id}`).then(response => {
+        axios.get(v.$config.HOST + `/dokhlab/actions/log.php?id=${v.id}`).then(response => {
           v.log = response.data
         })
 
         console.log('Loading Task Flow...')
-        axios.get(v.$config.HOST + `/allos/actions/file.php?name=${v.task.flow}`).then(response => {
+        axios.get(v.$config.HOST + `/dokhlab/actions/file.php?name=${v.task.flow}`).then(response => {
 //          console.log(response.data)
           console.log('Analyzing Flow...')
           v.residueFlows = response.data.split(/\r?\n/).map(line => { var l = line.split(/\s+/); return [l[1], parseFloat(l[2]).toPrecision(3)] })
@@ -671,24 +671,24 @@ export default {
       v.setFigureType(2)
 //      console.log(v.id)
       v.coverText = 'Checking Task Status...'
-      axios.get(v.$config.HOST + '/allos/actions/task.php?id=' + v.id).then(response => {
+      axios.get(v.$config.HOST + '/dokhlab/actions/task.php?id=' + v.id).then(response => {
 //        console.log(response.data)
         v.task = response.data
 //        console.log(v.task)
 
-        v.dendrogramSrc = v.$config.HOST + `/allos/actions/file.php?name=${v.task.dendrogram}&format=`
+        v.dendrogramSrc = v.$config.HOST + `/dokhlab/actions/file.php?name=${v.task.dendrogram}&format=`
 
-        axios.get(v.$config.HOST + `/allos/actions/log.php?id=${v.id}`).then(response => {
+        axios.get(v.$config.HOST + `/dokhlab/actions/log.php?id=${v.id}`).then(response => {
           v.log = response.data
         })
 
-//        axios.get(v.$config.HOST + `/allos/actions/file.php?name=${v.task.log}&format=`).then(response => {
+//        axios.get(v.$config.HOST + `/dokhlab/actions/file.php?name=${v.task.log}&format=`).then(response => {
 //          v.log = response.data
 //        })
 
         if (v.task.status === 'finished') {
           v.coverText = 'Loading Structure...'
-          axios.get(v.$config.HOST + `/allos/actions/file.php?name=${v.task.bfactor}&format=`).then(response => {
+          axios.get(v.$config.HOST + `/dokhlab/actions/file.php?name=${v.task.bfactor}&format=`).then(response => {
             v.output = response.data
             v.stage.loadFile(new Blob([v.output], { type: 'text/plain' }), { ext: v.task.bfactor.split('.').pop() }).then(function (comp) {
               v.pdbComp = comp

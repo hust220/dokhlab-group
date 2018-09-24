@@ -1,16 +1,8 @@
 <?php
 
-header("Access-Control-Allow-Origin: *");
+require_once('utils.php');
 
-session_start();
-
-require_once('config.php');
-
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
-    // set the PDO error mode to exception
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+anyone_do(function ($conn) {
     $username = $_POST['username'];
     $provided_password = $_POST['password'];
 
@@ -30,16 +22,27 @@ try {
         }
         else {
             $_SESSION['user'] = $row;
-            exit(json_encode(['status'=>1, 'user'=>$row]));
+            echo json_encode(['status'=>1, 'user'=>$row]);
         }
     }
     else {
         exit(json_encode(['status'=>0, 'msg'=>'Username doesn\'t exist!']));
     }
-}
-catch(PDOException $e) {
-    exit(json_encode(['status'=>0, 'msg'=>$e->getMessage()]));
-}
+});
 
-$conn = null;
+#session_start();
+#
+#require_once('config.php');
+#
+#try {
+#    $conn = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
+#    // set the PDO error mode to exception
+#    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+#
+#}
+#catch(PDOException $e) {
+#    exit(json_encode(['status'=>0, 'msg'=>$e->getMessage()]));
+#}
+#
+#$conn = null;
 

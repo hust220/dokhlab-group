@@ -4,7 +4,7 @@
   <el-dialog :title="`Task`" :visible.sync="taskPanelVisible" width="50%">
     <table>
       <tr><td>Task ID</td><td>{{taskToShow.id}}</td></tr>
-      <tr><td>Structure</td><td><a :href="$config.HOST + `/allos/actions/file.php?name=${taskToShow.receptor}&format=`">{{taskToShow.receptor}}</a></td></tr>
+      <tr><td>Structure</td><td><a :href="$config.HOST + `/dokhlab/actions/file.php?name=${taskToShow.receptor}&format=`">{{taskToShow.receptor}}</a></td></tr>
       <tr><td>Source</td><td>{{`${taskToShow.source_chain}-${taskToShow.source_residue}`}}</td></tr>
       <tr><td>Target</td><td>{{`${taskToShow.target_chain}-${taskToShow.target_residue}`}}</td></tr>
       <tr><td>At Chains</td><td>{{taskToShow.chains}}</td></tr>
@@ -22,7 +22,7 @@
   <el-dialog :title="`Delete Task`" :visible.sync="deleteTaskPanelVisible" width="50%">
     <p>Are you sure to delete the Task {{taskToDelete.id}}?</p>
     <table>
-      <tr><td>Structure</td><td><a :href="$config.HOST + `/allos/actions/file.php?name=${taskToDelete.receptor}&format=`">{{taskToDelete.receptor}}</a></td></tr>
+      <tr><td>Structure</td><td><a :href="$config.HOST + `/dokhlab/actions/file.php?name=${taskToDelete.receptor}&format=`">{{taskToDelete.receptor}}</a></td></tr>
       <tr><td>Source</td><td>{{`${taskToDelete.source_chain}-${taskToDelete.source_residue}`}}</td></tr>
       <tr><td>Target</td><td>{{`${taskToDelete.target_chain}-${taskToDelete.target_residue}`}}</td></tr>
       <tr><td>Threshold</td><td>{{taskToDelete.threshold}}</td></tr>
@@ -40,7 +40,7 @@
   <el-dialog :title="`Stop Task`" :visible.sync="stopTaskPanelVisible" width="50%">
     <p>Are you sure to stop the Task {{taskToStop.id}}?</p>
     <table>
-      <tr><td>Structure</td><td><a :href="$config.HOST + `/allos/actions/file.php?name=${taskToStop.receptor}&format=`">{{taskToStop.receptor}}</a></td></tr>
+      <tr><td>Structure</td><td><a :href="$config.HOST + `/dokhlab/actions/file.php?name=${taskToStop.receptor}&format=`">{{taskToStop.receptor}}</a></td></tr>
       <tr><td>Source</td><td>{{`${taskToStop.source_chain}-${taskToStop.source_residue}`}}</td></tr>
       <tr><td>Target</td><td>{{`${taskToStop.target_chain}-${taskToStop.target_residue}`}}</td></tr>
       <tr><td>Threshold</td><td>{{taskToStop.threshold}}</td></tr>
@@ -57,7 +57,7 @@
   <!-- Resubmit Task Dialog -->
   <el-dialog :title="`Resubmit Task`" :visible.sync="resubmitTaskPanelVisible" width="50%">
     <table>
-      <tr><td>Structure</td><td><a :href="$config.HOST + `/allos/actions/file.php?name=${taskToResubmit.receptor}&format=`">{{taskToResubmit.receptor}}</a></td></tr>
+      <tr><td>Structure</td><td><a :href="$config.HOST + `/dokhlab/actions/file.php?name=${taskToResubmit.receptor}&format=`">{{taskToResubmit.receptor}}</a></td></tr>
 
       <tr>
         <td>Source</td>
@@ -246,7 +246,7 @@ export default {
 
     check () {
       var v = this
-      axios.get(v.$config.HOST + '/allos/actions/check.php').then(response => {
+      axios.get(v.$config.HOST + '/dokhlab/actions/check.php').then(response => {
         v.tasks = response.data.tasks
         v.tasks.sort((a, b) => {
           return parseInt(b.userid) - parseInt(a.userid)
@@ -258,7 +258,7 @@ export default {
 
     deleteTask () {
       var v = this
-      axios.get(`${v.$config.HOST}/allos/actions/delete_task.php?id=${v.taskToDelete.id}`).then(response => {
+      axios.get(`${v.$config.HOST}/dokhlab/actions/delete_task.php?id=${v.taskToDelete.id}`).then(response => {
         console.log(response.data)
         alert('Delete successfully')
       }).catch(() => {
@@ -268,7 +268,7 @@ export default {
 
     stopTask () {
       var v = this
-      axios.get(`${v.$config.HOST}/allos/actions/stop_task.php?id=${v.taskToStop.id}`).then(response => {
+      axios.get(`${v.$config.HOST}/dokhlab/actions/stop_task.php?id=${v.taskToStop.id}`).then(response => {
         console.log(response.data)
         alert('Stop successfully')
       }).catch(() => {
@@ -295,7 +295,7 @@ export default {
 
       axios({
         method: 'post',
-        url: v.$config.HOST + '/allos/actions/resubmit.php',
+        url: v.$config.HOST + '/dokhlab/actions/resubmit.php',
         data: formData,
         config: {headers: {'Content-Type': 'multipart/form-data'}}
       }).then(response => {

@@ -48,7 +48,7 @@
 
         <!-- Names -->
         <div id="structure-name" v-if="step===0">
-          <div v-if="structureName!==''">Structure: <a :href="$config.HOST+`/allos/actions/file.php?name=${structureName}&format=`" v-text="structureName"></a></div>
+          <div v-if="structureName!==''">Structure: <a :href="$config.HOST+`/dokhlab/actions/file.php?name=${structureName}&format=`" v-text="structureName"></a></div>
           <div v-if="structureName!==''&&form.source_chain!==''&&form.source_residue!==''">Source: {{`${form.source_chain}-${form.source_residue}`}}</div>
           <div v-if="structureName!==''&&form.target_chain!==''&&form.target_residue!==''">Target: {{`${form.target_chain}-${form.target_residue}`}}</div>
         </div>
@@ -69,7 +69,7 @@
                 </more-submenu>
               </more-menuitem>
 
-              <more-menuitem :href="$config.HOST + `/allos/actions/file.php?name=${structureName}&format=`">
+              <more-menuitem :href="$config.HOST + `/dokhlab/actions/file.php?name=${structureName}&format=`">
                 Download
               </more-menuitem>
             </more-dropdown>
@@ -100,14 +100,14 @@
           <td>
             <div class="label">From
               <el-tooltip class="item" effect="dark" placement="bottom">
-              <div slot="content">From which residue is the allosteric path to be calculated.</div><i class="el-icon-question"></i>
+              <div slot="content">From which residue is the dokhlabteric path to be calculated.</div><i class="el-icon-question"></i>
               </el-tooltip>
             </div>
           </td>
           <td>
             <div class="label">To
               <el-tooltip class="item" effect="dark" placement="bottom">
-              <div slot="content">To which residue is the allosteric path to be calculated.</div><i class="el-icon-question"></i>
+              <div slot="content">To which residue is the dokhlabteric path to be calculated.</div><i class="el-icon-question"></i>
               </el-tooltip>
             </div>
           </td>
@@ -341,12 +341,12 @@ export default {
 
       axios({
         method: 'post',
-        url: v.$config.HOST + '/allos/actions/set_structure.php',
+        url: v.$config.HOST + '/dokhlab/actions/set_structure.php',
         data: formData,
         config: {headers: {'Content-Type': 'multipart/form-data'}}
       }).then(response => {
         v.structureName = response.data
-        v.stage.loadFile(v.$config.HOST + `/allos/actions/file.php?name=${v.structureName}&format=`, { ext: v.structureName.split('.').pop() }).then(function (comp) {
+        v.stage.loadFile(v.$config.HOST + `/dokhlab/actions/file.php?name=${v.structureName}&format=`, { ext: v.structureName.split('.').pop() }).then(function (comp) {
           v.comp = comp
           v.toggleRepresentation('cartoon')
           v.checkRenderStatus(function () {
@@ -430,7 +430,7 @@ export default {
 
       axios({
         method: 'post',
-        url: v.$config.HOST + '/allos/actions/submit.php',
+        url: v.$config.HOST + '/dokhlab/actions/submit.php',
         data: formData,
         config: {headers: {'Content-Type': 'multipart/form-data'}}
       }).then(response => {

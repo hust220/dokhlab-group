@@ -9,7 +9,7 @@
   <!--
   <iframe style="overflow:visible;width:800px;min-height:1000px;border:none" src="https://docs.google.com/document/d/e/2PACX-1vQhNi9UyjZrzWSnWXEpzKwFIANESYx7gm9Cm1_YZafa_WB8XgjMqvuIC4IO69UbcCQLNttCeXsnqsU1/pub?embedded=true"></iframe>
   -->
-  <iframe style="overflow:visible;width:800px;min-height:1000px;border:none" src="http://jianopt.com/dokhlab/actions/home.php"></iframe>
+  <iframe style="overflow:visible;width:800px;min-height:1000px;border:none" :src="'http://jianopt.com/dokhlab/actions/proxy.php?src='+frontConfig.home.src"></iframe>
   <!--
   <div v-html="content"></div>
   -->
@@ -26,6 +26,12 @@ export default {
   data () {
     return {
       content: ''
+    }
+  },
+
+  computed: {
+    frontConfig () {
+      return this.$store.state.frontConfig
     }
   },
 

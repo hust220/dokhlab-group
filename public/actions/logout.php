@@ -1,6 +1,10 @@
 <?php
 
-header("Access-Control-Allow-Origin: *");
+require_once('utils.php');
 
-session_start();
-session_destroy();
+anyone_do(function ($conn) {
+  session_start();
+  session_destroy();
+});
+
+

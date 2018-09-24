@@ -2,14 +2,16 @@
 
 require_once('utils.php');
 
-admin(function ($conn) {
+admin_do(function ($conn) {
   $conds = [];
-  foreach ($_GET as $k => $v) {
-    if ($k == 'table') {
+  foreach ($_POST as $k => $v) {
+    if ($k == '__table') {
       $table = $v;
     } else {
-      $q = $conn->quote($v);
-      $conds[] = "$k=$q";
+      if ($v != '') {
+        $q = $conn->quote($v);
+        $conds[] = "$k=$q";
+      }
     }
   }
   $condition = implode(" and ", $conds);

@@ -7,12 +7,13 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import router from './router'
 import vueConfig from 'vue-config'
-import config from '../../config.json'
+import backConfig from '../../config.json'
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
+import axios from 'axios'
 
 const configs = {
-  HOST: config.host
+  HOST: backConfig.host
 }
 
 Vue.config.productionTip = false
@@ -24,8 +25,31 @@ Vue.use(vueConfig, configs)
 const store = new Vuex.Store({
   state: {
     user: '',
-    view: 'fullscreen'
+
+    view: 'fullscreen',
+
+    frontConfig: {
+      layout: {
+        align: 'left'
+      },
+
+      home: {
+        src: '',
+        edit: ''
+      },
+
+      research: {
+        src: '',
+        edit: ''
+      },
+
+      tools: {
+        src: '',
+        edit: ''
+      }
+    }
   },
+
   mutations: {
     login (state, user) {
       state.user = user
@@ -41,6 +65,33 @@ const store = new Vuex.Store({
 
     viewWindow (state) {
       state.view = 'window'
+    },
+
+    initFrontConfig (state, conf) {
+      state.frontConfig = conf
+    },
+
+    updateFrontConfig (state, conf) {
+      let formData = new FormData()
+
+      formData.append('config', JSON.stringify(conf))
+
+      var oldConf = state.frontConfig
+      state.frontConfig = conf
+
+      axios({
+        method: 'post',
+        url: configs.HOST + `/dokhlab/actions/front-config/update.php`,
+        data: formData,
+        config: {headers: {'Content-Type': 'multipart/form-data'}},
+        withCredentials: true
+      }).then(response => {
+        console.log(response)
+      }).catch(error => {
+        alert('Update website config failed!!!')
+        state.frontConfig = oldConf
+        console.log(error.response)
+      })
     }
   }
 })

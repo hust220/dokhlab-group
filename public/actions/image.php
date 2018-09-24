@@ -1,6 +1,10 @@
 <?php
 
-header("Access-Control-Allow-Origin: *");
+#header("Access-Control-Allow-Origin: *");
+
+require_once('utils.php');
+
+init_head();
 
 $name = $_GET['name'];
 

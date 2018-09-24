@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 import Research from '@/components/Research'
+import Tools from '@/components/Tools'
 import Publications from '@/components/Publications'
 import Members from '@/components/Members'
 import Management from '@/components/Management'
@@ -30,6 +31,12 @@ export default new Router({
       path: '/research',
       name: 'Research',
       component: Research
+    },
+
+    {
+      path: '/tools',
+      name: 'Tools',
+      component: Tools
     },
 
     {
