@@ -1,6 +1,18 @@
 <template>
 <div>
 
+  <!-- Page Preview -->
+  <el-dialog :title="pages.preview.page" :visible.sync="pages.preview.visible">
+    <div style="height: 500px; overflow-x: auto">
+      <div v-html="pages.preview.html"></div>
+    </div>
+
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="pages.preview.visible=false">Close</el-button>
+      <el-button type="primary" @click="publishPage(pages.preview.page);pages.preview.visible=false">Publish</el-button>
+    </div>
+  </el-dialog>
+
   <!-- New Image -->
   <input type="file" id="upload_image" ref="upload_image" @change="setTempImage($event)" style="display:None;">
   <!--
@@ -103,11 +115,12 @@
   <!-- Main panel -->
   <div style="font-size:13px;font-family: Geneva, arial, helvetica, sans-serif;border:1px solid #BBBBBB;width:800px;overflow:scroll;position:absolute;top:160px;bottom:0px">
     <div style="margin-top:20px;padding:0px;margin-left:10px">
+
       <!-- Layout -->
       <folder>
         <b>Layout</b>
         <div slot="items">
-          <el-radio-group :value="frontConfig.layout.align">
+          <el-radio-group :value="$store.state.frontConfig.layout.align">
             <el-radio @change="updateLayout('left')" label="left">Left</el-radio>
             <el-radio @change="updateLayout('center')" label="center">Center</el-radio>
             <el-radio @change="updateLayout('right')" label="right">Right</el-radio>
@@ -115,77 +128,48 @@
         </div>
       </folder>
 
-      <!-- Home -->
+      <!-- Carousel -->
       <folder>
-        <b>Home</b>
+        <b>Carousel</b>
         <div slot="items">
-          <div style="padding-left:20px">
-            <!-- Home source -->
-            <div>
-              <el-input @change="updateHomeSrc" :value="frontConfig.home.src">
-                <template slot="prepend">Src:</template>
-              </el-input>
-            </div>
-
-            <!-- Home edit link -->
-            <div>
-              <el-input @change="updateHomeEdit" :value="frontConfig.home.edit">
-                <template slot="prepend">
-                  <a :href="frontConfig.home.edit" target="_blank">Edit</a>
-                </template>
-              </el-input>
-            </div>
+          <div style="margin: 10px auto; width: 700px">
+            <el-button @click="updateCarousel" type="info" size="small" round>Publish</el-button>
+            <el-input type="textarea" rows="10" v-model="carouselContent"></el-input>
           </div>
         </div>
       </folder>
 
-      <!-- Research -->
-      <folder>
-        <b>Research</b>
-        <div slot="items">
-          <div style="padding-left:20px">
-            <!-- Research source -->
-            <div>
-              <el-input @change="updateResearchSrc" :value="frontConfig.research.src">
-                <template slot="prepend">Src:</template>
-              </el-input>
-            </div>
+      <!-- Home, Research, Tools -->
+      <template v-for="(page, ind) in ['home', 'research', 'tools']">
+        <folder>
+        <b>{{page}}</b>
+          <div slot="items">
+            <div style="padding-left:20px">
+              <div style="margin: 10px 0px">
+                <el-button @click="publishPage(page)" type="info" size="mini" round>Publish</el-button>
+                <el-button @click="pages.preview.html=pages[page].html;pages.preview.page=page;pages.preview.visible=true" type="info" size="mini" plain round>Preview</el-button>
+                <el-button @click="pages[page].syncPreview.visible=!pages[page].syncPreview.visible" type="info" size="mini" plain round>Sync Preview</el-button>
+                <el-button @click="formatCodes(page)" type="info" size="mini" plain round>Format Codes</el-button>
+              </div>
 
-            <!-- Research edit link -->
-            <div>
-              <el-input @change="updateResearchEdit" :value="frontConfig.research.edit">
-                <template slot="prepend">
-                  <a :href="frontConfig.research.edit" target="_blank">Edit</a>
-                </template>
-              </el-input>
+              <div style="margin:10px">
+                <!--
+                <codemirror ref="myCm" :value="$store.state.frontConfig[page].src" :options="pages.srcOptions" @ready="pages[page].html=$store.state.frontConfig[page].src" @input="updateHtml($event, page)">
+                -->
+                <codemirror ref="myCm" v-model="pages[page].html" :options="pages.srcOptions" @ready="pages[page].html=$store.state.frontConfig[page].src">
+                </codemirror>
+              </div>
+
+              <div v-if="pages[page].syncPreview.visible">
+                <h3>Preview</h3>
+                <div style="height:300px;overflow-x:auto">
+                  <div v-html="pages[page].html"></div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </folder>
-
-      <!-- Tools -->
-      <folder>
-        <b>Tools</b>
-        <div slot="items">
-          <div style="padding-left:20px">
-            <!-- Tools source -->
-            <div>
-              <el-input @change="updateToolsSrc" :value="frontConfig.tools.src">
-                <template slot="prepend">Src:</template>
-              </el-input>
-            </div>
-
-            <!-- Tools edit link -->
-            <div>
-              <el-input @change="updateToolsEdit" :value="frontConfig.tools.edit">
-                <template slot="prepend">
-                  <a :href="frontConfig.tools.edit" target="_blank">Edit</a>
-                </template>
-              </el-input>
-            </div>
-          </div>
-        </div>
-      </folder>
+        </folder>
+      </template>
 
       <!-- Tables -->
       <ul v-for="tableName in tableNames">
@@ -238,13 +222,64 @@
 <script>
 import { bus } from '../bus.js'
 import axios from 'axios'
-// import ajax from './ajax.js'
+import { VueEditor } from 'vue2-editor'
+
+import { codemirror } from 'vue-codemirror'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/mode/javascript/javascript.js'
+import 'codemirror/theme/base16-dark.css'
+import 'codemirror/keymap/sublime.js'
+
+import beautify from 'js-beautify'
 
 export default {
   name: 'Members',
 
+  components: {
+    VueEditor,
+    codemirror
+  },
+
   data () {
     return {
+      pages: {
+        preview: {
+          visible: false,
+          html: '',
+          page: 'home'
+        },
+
+        srcOptions: {
+          tabSize: 4,
+          mode: 'text/javascript',
+          theme: 'base16-dark',
+          lineNumbers: true,
+          line: true,
+          keyMap: 'sublime'
+        },
+
+        home: {
+          html: '',
+          syncPreview: {
+            visible: false
+          }
+        },
+
+        research: {
+          html: '',
+          syncPreview: {
+            visible: false
+          }
+        },
+
+        tools: {
+          html: '',
+          syncPreview: {
+            visible: false
+          }
+        }
+      },
+
       context: {
         style: {
           width: '100px',
@@ -312,26 +347,9 @@ export default {
         visible: false
       },
 
-      config: {
-        layout: {
-          align: 'left'
-        },
+      config: this.$store.state.frontConfig,
 
-        home: {
-          src: '',
-          edit: ''
-        },
-
-        research: {
-          src: '',
-          edit: ''
-        },
-
-        tools: {
-          src: '',
-          edit: ''
-        }
-      }
+      carouselContent: JSON.stringify(this.$store.state.frontConfig.carousel)
     }
   },
 
@@ -360,12 +378,55 @@ export default {
       return k
     },
 
+    storedPages () {
+      return {
+        home: this.$store.state.frontConfig.home.src,
+        research: this.$store.state.frontConfig.research.src,
+        tools: this.$store.state.frontConfig.tools.src
+      }
+    },
+
     frontConfig () {
       return this.$store.state.frontConfig
     }
   },
 
+  watch: {
+    storedPages (val) {
+      this.pages.home.html = val.home
+      this.pages.research.html = val.research
+      this.pages.tools.html = val.tools
+    },
+
+    frontConfig (val) {
+      this.config = val
+      this.carouselContent = JSON.stringify(this.config.carousel)
+    }
+  },
+
   methods: {
+    updateCarousel () {
+      var conf = this.frontConfig
+      conf.carousel = JSON.parse(this.carouselContent)
+      this.$store.commit('updateFrontConfig', conf)
+    },
+
+    formatCodes (page) {
+      var v = this
+      v.pages[page].html = beautify.html(v.pages[page].html, { indent_size: 2, space_in_empty_paren: true, wrap_attributes: 'auto', wrap_line_length: 80 })
+    },
+
+    updateHtml (e, page) {
+      this.pages[page].html = e
+    },
+
+    publishPage (page) {
+      var v = this
+      var conf = v.frontConfig
+      conf[page].src = v.pages[page].html
+      v.$store.commit('updateFrontConfig', conf)
+    },
+
     newImageClick () {
 //      var v = this
 //      v.tempImage.name = v.context.path + '/' + prompt('Please input an Image name:')
@@ -407,48 +468,6 @@ export default {
       v.$store.commit('updateFrontConfig', conf)
     },
 
-    updateHomeSrc (l) {
-      var v = this
-      var conf = v.frontConfig
-      conf.home.src = l
-      v.$store.commit('updateFrontConfig', conf)
-    },
-
-    updateHomeEdit (l) {
-      var v = this
-      var conf = v.frontConfig
-      conf.home.edit = l
-      v.$store.commit('updateFrontConfig', conf)
-    },
-
-    updateResearchSrc (l) {
-      var v = this
-      var conf = v.frontConfig
-      conf.research.src = l
-      v.$store.commit('updateFrontConfig', conf)
-    },
-
-    updateResearchEdit (l) {
-      var v = this
-      var conf = v.frontConfig
-      conf.research.edit = l
-      v.$store.commit('updateFrontConfig', conf)
-    },
-
-    updateToolsSrc (l) {
-      var v = this
-      var conf = v.frontConfig
-      conf.tools.src = l
-      v.$store.commit('updateFrontConfig', conf)
-    },
-
-    updateToolsEdit (l) {
-      var v = this
-      var conf = v.frontConfig
-      conf.tools.edit = l
-      v.$store.commit('updateFrontConfig', conf)
-    },
-
     setImage () {
       var v = this
       var name = v.context.path + '/' + v.tempImage.name
@@ -482,7 +501,7 @@ export default {
     renameImageFolder () {
       var v = this
       var oldname = v.context.path
-      var newname = prompt('Please input a new folder name:')
+      var newname = v.getFilePath(v.context.path) + '/' + prompt('Please input a new folder name:')
       axios({
         method: 'get',
         url: v.$config.HOST + `/dokhlab/actions/image/rename.php?oldname=${oldname}&newname=${newname}`,
@@ -501,7 +520,7 @@ export default {
       if (r === true) {
         axios({
           method: 'get',
-          url: v.$config.HOST + `/dokhlab/actions/image/remove.php?name=${v.context.path}`,
+          url: v.$config.HOST + `/dokhlab/actions/image/remove_folder.php?name=${v.context.path}`,
           withCredentials: true
         }).then(response => {
           v.setImages()
@@ -513,11 +532,18 @@ export default {
     },
 
     getFilePath (fileName) {
-      return fileName.substring(0, fileName.lastIndexOf('/') + 1)
+//      return fileName.substring(0, fileName.lastIndexOf('/') + 1)
+      var ls = fileName.split(/[\\/]/).filter(word => word.length > 0)
+      ls.pop()
+      var path = ls.join('/')
+      if (fileName[0] === '/' || fileName[0] === '\\') {
+        path = '/' + path
+      }
+      return path
     },
 
     getBaseName (fileName) {
-      return fileName.split(/[\\/]/).pop()
+      return fileName.split(/[\\/]/).filter(word => word.length > 0).pop()
     },
 
     getFileExt (fileName) {

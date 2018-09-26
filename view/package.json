@@ -16,6 +16,7 @@
   "dependencies": {
     "axios": "^0.17.1",
     "element-ui": "^2.0.7",
+    "js-beautify": "^1.8.6",
     "ngl": "^2.0.0-dev.29",
     "sass-loader": "^7.1.0",
     "sprintf-js": "^1.1.1",
@@ -24,9 +25,12 @@
     "stylus-loader": "^3.0.2",
     "three": "^0.91.0",
     "vue": "^2.5.2",
+    "vue-codemirror": "^4.0.5",
     "vue-full-calendar": "^2.6.1",
+    "vue-html-editor": "^0.2.1",
     "vue-router": "^3.0.1",
     "vue-swatches": "^1.0.1",
+    "vue2-editor": "^2.6.6",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

@@ -1,19 +1,9 @@
 <template>
 <div style="position:absolute;top:160px;bottom:50px">
-  <!--
-  <div style="padding: 5px; width: 800px; height: 41px">
-    <div style="margin-right: 5px; height: 30px" align="right">
-      <img src="../assets/tools.gif" style="width:300px; height:30px" />
-    </div>
-  </div>
-  -->
     <!--
-    <iframe ref="frame" style="width:800px" src="https://docs.google.com/document/d/e/2PACX-1vSkcgDSUJqQTPuskj-GhPdeuD4xr-Y-MZuuIDKa32MsJ-1m0Hdhr53ybL9-Co7RP-n_JsK8R7R0EcIr/pub?embedded=true" frameborder="0" scrolling="no" @load="resizeIframe()" ></iframe>
-    -->
   <iframe ref="frame" style="width:800px;height:100%" :src="'http://jianopt.com/dokhlab/actions/proxy.php?src='+frontConfig.tools.src" frameborder="0" @load="resizeIframe()" ></iframe>
-  <!--
-  <div v-html="content"></div>
   -->
+  <div v-html="$store.state.frontConfig.tools.src"></div>
 </div>
 </template>
 

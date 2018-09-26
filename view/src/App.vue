@@ -379,18 +379,15 @@ div.el-card__header {
 }
 
 a {
-  color: #67c23a;
+  color: rgb(144, 147, 153);
 }
 
 a:hover {
-  /*
-  color: #ad8134;
-   */
-color: #b5e7a0;
+  color: rgb(144,147,153);
 }
 
 a:visited {
-  color: #ad8134;
+  color: rgb(144, 147, 153);
 }
 
 .el-button--text {

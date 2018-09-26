@@ -10,7 +10,7 @@
   <div>
   </div>
 
-  <div style="positition: flex">
+  <div style="display: flex">
     <!-- Navigation -->
     <div>
       <h3>Filters</h3>
