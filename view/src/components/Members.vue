@@ -11,7 +11,7 @@
     <div style="flex-direction:column;background-color:#EEEEEE;border:1px solid #BBBBBB;padding:5px 10px; width: 250px">
       <h5>Current Members</h5>
       <ul>
-        <li @click='member=members[0]' class="mem">Principal Investigator</li>
+        <li @click='member=boss' class="mem">Principal Investigator</li>
         <folder class="mems" v-for="type in ['Undergraduate Student', 'Postdoctoral Fellow', 'Research Assistant Professor', 'Technician', 'Visiting Scientist', 'Foreign Student', 'Rotation Student']" :key="type">
           {{type}}s
           <template slot="items">
@@ -89,6 +89,10 @@ export default {
   computed: {
     currentPostdocs () {
       return this.members.filter(mem => mem.current === 'yes' && mem.designation === 'Postdoctoral Fellow')
+    },
+
+    boss () {
+      return this.members.filter(mem => mem.designation === 'Principal Investigator')[0]
     }
   },
 
@@ -105,7 +109,7 @@ export default {
         url: v.$config.HOST + '/dokhlab/actions/members.php'
       }).then(response => {
         v.members = response.data
-        v.member = v.members[0]
+        v.member = v.boss
       }).catch(() => {
         alert('Fetch members failed!')
       })

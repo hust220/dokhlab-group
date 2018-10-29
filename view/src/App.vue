@@ -210,8 +210,6 @@ img {
 body {
   margin: 8px;
   padding: 0px;
-  width: 100%;
-  height: 100%;
 }
 
 #app {
@@ -426,6 +424,17 @@ a:visited.jn-button {
 
 .user-button:hover {
   text-decoration: underline;
+}
+
+.greybox {
+  text-align: justify;
+  text-justify: inter-word;
+  background: #EEEEEE;
+  border: 1px solid #BBBBBB;
+  font-size: 13px;
+  font-family: Geneva, arial, helvetica, sans-serif;
+  padding: 5px;
+  margin: 5px;
 }
 
 </style>

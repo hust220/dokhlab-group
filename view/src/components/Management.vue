@@ -9,19 +9,28 @@
 
     <div slot="footer" class="dialog-footer">
       <el-button @click="pages.preview.visible=false">Close</el-button>
-      <el-button type="primary" @click="publishPage(pages.preview.page);pages.preview.visible=false">Publish</el-button>
+      <el-button type="info" @click="publishPage(pages.preview.page);pages.preview.visible=false">Publish</el-button>
+    </div>
+  </el-dialog>
+
+  <!-- Timeline Preview -->
+  <el-dialog title="Timeline" :visible.sync="timelineVisible">
+    <div style="height: 500px; overflow-x: auto">
+      <iframe :src="`https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=${timelineId}&font=Default&lang=en&initial_zoom=2&width=${timeline.width}&height=${timeline.height}`" :width="timeline.width" :height="timeline.height" webkitallowfullscreen mozallowfullscreen allowfullscreen frameborder='0'></iframe>
+    </div>
+
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="timelineVisible=false">Close</el-button>
+      <el-button type="info" @click="updateTimeline();timelineVisible=false">Publish</el-button>
     </div>
   </el-dialog>
 
   <!-- New Image -->
   <input type="file" id="upload_image" ref="upload_image" @change="setTempImage($event)" style="display:None;">
-  <!--
-  <input type="file" id="upload_image" ref="upload_image" style="display:None;">
-  -->
   <!-- New Image Dialog -->
   <el-dialog :title="tempImage.name" :visible.sync="tempImage.visible">
     <div style="height: 500px; overflow-x: auto">
-      <img style="display:block;height:100%;width:auto;margin:0px auto" :src="$config.HOST+'/dokhlab/actions/image/temp.php?path='+tempImage.path+'&name='+tempImage.name" />
+      <img style="display:block;height:100%;width:auto;margin:0px auto" :src="$config.HOST+'/dokhlab/actions/dir/temp.php?dir=images&path='+tempImage.path+'&name='+tempImage.name" />
     </div>
 
     <div slot="footer" class="dialog-footer">
@@ -33,27 +42,28 @@
   <!-- Context Menu -->
   <div :style="context.style">
     <ul v-if="context.node">
-      <li class="context-menu-item" v-if="context.node.sons!==''" @click="newImageClick">New Image</li>
-      <li class="context-menu-item" v-if="context.node.sons!==''" @click="newImageFolder">New Folder</li>
-      <li class="context-menu-item" v-if="context.node.sons!==''" @click="renameImageFolder">Rename</li>
-      <li class="context-menu-item" v-if="context.node.sons!==''" @click="deleteImageFolder">Delete</li>
+      <li class="context-menu-item" v-if="context.node.sons!==''" @click="newFileClick">New File</li>
+      <li class="context-menu-item" v-if="context.node.sons!==''" @click="newFolder">New Folder</li>
+      <li class="context-menu-item" v-if="context.node.sons!==''" @click="renameFolder">Rename</li>
+      <li class="context-menu-item" v-if="context.node.sons!==''" @click="deleteFolder">Delete</li>
 
       <!--
       <li class="context-menu-item" v-if="context.node.sons===''" @click="replaceClick">Replace</li>
       -->
-      <li class="context-menu-item" v-if="context.node.sons===''" @click="renameImage">Rename</li>
-      <li class="context-menu-item" v-if="context.node.sons===''" @click="deleteImage">Delete</li>
+      <li class="context-menu-item" v-if="context.node.sons===''" @click="renameFile">Rename</li>
+      <li class="context-menu-item" v-if="context.node.sons===''" @click="deleteFile">Delete</li>
     </ul>
   </div>
 
   <!-- Image Dialog -->
   <el-dialog :title="image.name" :visible.sync="image.visible">
     <div style="height: 500px; overflow-x: auto">
-      <img style="display:block;height:100%;width:auto;margin:0px auto" :src="$config.HOST+'/dokhlab/actions/image.php?name='+image.path" />
+      <img style="display:block;height:100%;width:auto;margin:0px auto" :src="$config.HOST+'/dokhlab/actions/download.php?dir=images&name='+image.path" />
     </div>
 
     <div slot="footer" class="dialog-footer">
-      <el-button @click="image.visible=false">Close</el-button>
+      <el-button @click="renameFile();image.visible=false">Rename</el-button>
+      <el-button @click="deleteFile();image.visible=false">Delete</el-button>
       <el-button type="primary" @click="image.visible=false">Close</el-button>
     </div>
   </el-dialog>
@@ -139,6 +149,24 @@
         </div>
       </folder>
 
+      <!-- Timeline -->
+      <folder>
+        <b>Timeline</b>
+        <div slot="items">
+          <div style="margin: 10px auto; width: 700px">
+            <div style="margin-bottom:5px">
+              <el-button @click="updateTimeline" type="info" size="small" round>Publish</el-button>
+              <el-button @click="previewTimeline" type="info" size="small" plain round>Preview</el-button>
+            </div>
+            <table>
+              <tr><td>Src</td><td><el-input v-model="timeline.src"></el-input></td></tr>
+              <tr><td>Height</td><td><el-input v-model="timeline.height"></el-input></td></tr>
+              <tr><td>Width</td><td><el-input v-model="timeline.width"></el-input></td></tr>
+            </table>
+          </div>
+        </div>
+      </folder>
+
       <!-- Home, Research, Tools -->
       <template v-for="(page, ind) in ['home', 'research', 'tools']">
         <folder>
@@ -179,7 +207,7 @@
           <div style="margin-bottom:30px" slot="items">
             <div style="padding-top:10px"><span style="cursor:pointer" @click="setInsert(tableName)"><i>Add Record...</i></span></div>
 
-            <table style="border-collapse: collapse;" v-if="tables[tableName].data">
+            <table class="table-strip" style="border-collapse: collapse;" v-if="tables[tableName].data">
               <!-- Table Head -->
               <tr v-if="tables[tableName].data.length>0">
                 <th></th>
@@ -208,11 +236,19 @@
       </ul>
 
       <!-- Images -->
-      <tree :content="images" root="../">
+      <tree :content="images" root="">
         <template slot-scope="slotProps">
-          <span @contextmenu.stop="showContextMenu($event, slotProps.node, slotProps.path)" @click="if(slotProps.node.sons===''){image.name=slotProps.node.name;image.path=slotProps.path;image.visible=true}" class="tree-leaf"><b>{{slotProps.node.name}}</b></span>
+          <span @contextmenu.stop="showContextMenu($event, slotProps.node, slotProps.path)" @click="if(slotProps.node.sons===''){image.name=slotProps.node.name;image.path=slotProps.path;context.node=slotProps.node;context.path=slotProps.path;image.visible=true}" class="tree-leaf"><b>{{slotProps.node.name}}</b></span>
         </template>
       </tree>
+
+      <!-- Papers -->
+      <tree :content="papers" root="">
+        <template slot-scope="slotProps">
+          <span @contextmenu.stop="showContextMenu($event, slotProps.node, slotProps.path)" @click="paperClick(slotProps.node, slotProps.path)" class="tree-leaf"><b>{{slotProps.node.name}}</b></span>
+        </template>
+      </tree>
+      <a id="paper" :href="$config.HOST+'/dokhlab/actions/download.php?dir=papers&name='+paper.path" target="_blank" style="display:none">Paper</a>
 
     </div>
   </div>
@@ -327,6 +363,11 @@ export default {
           data: [],
           key: 'id',
           name: 'Users'
+        },
+        events: {
+          data: [],
+          key: 'id',
+          name: 'Events'
         }
       },
 
@@ -335,9 +376,19 @@ export default {
         sons: ''
       },
 
+      papers: {
+        name: 'Papers',
+        sons: ''
+      },
+
       image: {
         path: '',
         visible: false,
+        name: ''
+      },
+
+      paper: {
+        path: '',
         name: ''
       },
 
@@ -349,11 +400,23 @@ export default {
 
       config: this.$store.state.frontConfig,
 
-      carouselContent: JSON.stringify(this.$store.state.frontConfig.carousel)
+      carouselContent: JSON.stringify(this.$store.state.frontConfig.carousel),
+
+      timeline: this.$store.state.frontConfig.timeline,
+      timelineVisible: false
     }
   },
 
   computed: {
+    timelineId () {
+      var found = this.timeline.src.match(/https:\/\/docs.google.com\/spreadsheets\/d\/([^/]+)\/edit#/)
+      if (found) {
+        return found[1]
+      } else {
+        return ''
+      }
+    },
+
     tableCellStyle () {
       return {
         whiteSpace: 'nowrap',
@@ -405,10 +468,29 @@ export default {
   },
 
   methods: {
+    paperClick (node, path) {
+      if (node.sons === '') {
+        this.paper.name = node.name
+        this.paper.path = path
+        document.getElementById('paper').click()
+      }
+    },
+
     updateCarousel () {
       var conf = this.frontConfig
       conf.carousel = JSON.parse(this.carouselContent)
       this.$store.commit('updateFrontConfig', conf)
+    },
+
+    previewTimeline () {
+      this.timelineVisible = true
+    },
+
+    updateTimeline () {
+      var conf = this.frontConfig
+      conf.timeline = this.timeline
+      this.$store.commit('updateFrontConfig', conf)
+      alert('Update Successfully')
     },
 
     formatCodes (page) {
@@ -427,7 +509,7 @@ export default {
       v.$store.commit('updateFrontConfig', conf)
     },
 
-    newImageClick () {
+    newFileClick () {
 //      var v = this
 //      v.tempImage.name = v.context.path + '/' + prompt('Please input an Image name:')
       window.document.getElementById('upload_image').click()
@@ -445,10 +527,11 @@ export default {
 
       let f = e.target.files[0]
       formData.append('file', f)
+      formData.append('dir', 'images')
 
       axios({
         method: 'post',
-        url: v.$config.HOST + '/dokhlab/actions/image/upload.php',
+        url: v.$config.HOST + '/dokhlab/actions/dir/upload.php',
         data: formData,
         config: {headers: {'Content-Type': 'multipart/form-data'}},
         withCredentials: true
@@ -473,57 +556,61 @@ export default {
       var name = v.context.path + '/' + v.tempImage.name
       axios({
         method: 'get',
-        url: v.$config.HOST + `/dokhlab/actions/image/set.php?name=${name}&path=${v.tempImage.path}`,
+        url: v.$config.HOST + `/dokhlab/actions/dir/set.php?dir=images&name=${name}&path=${v.tempImage.path}`,
         withCredentials: true
       }).then(response => {
         v.setImages()
+        v.setPapers()
       }).catch(error => {
         console.log(error.response)
         alert(`Set Image ${v.tempImage.name} failed!`)
       })
     },
 
-    newImageFolder () {
+    newFolder () {
       var v = this
       var folder = v.context.path + '/' + prompt('Please input a folder name:')
       axios({
         method: 'get',
-        url: v.$config.HOST + `/dokhlab/actions/image/new_folder.php?name=${folder}`,
+        url: v.$config.HOST + `/dokhlab/actions/dir/new_folder.php?dir=images&name=${folder}`,
         withCredentials: true
       }).then(response => {
         v.setImages()
+        v.setPapers()
       }).catch(error => {
         console.log(error.response)
         alert(`Create New Image Folder ${folder} failed!`)
       })
     },
 
-    renameImageFolder () {
+    renameFolder () {
       var v = this
       var oldname = v.context.path
       var newname = v.getFilePath(v.context.path) + '/' + prompt('Please input a new folder name:')
       axios({
         method: 'get',
-        url: v.$config.HOST + `/dokhlab/actions/image/rename.php?oldname=${oldname}&newname=${newname}`,
+        url: v.$config.HOST + `/dokhlab/actions/dir/rename.php?dir=images&oldname=${oldname}&newname=${newname}`,
         withCredentials: true
       }).then(response => {
         v.setImages()
+        v.setPapers()
       }).catch(error => {
         console.log(error.response)
         alert(`Rename Image Folder ${oldname} failed!`)
       })
     },
 
-    deleteImageFolder () {
+    deleteFolder () {
       var v = this
       var r = confirm('Are you sure?')
       if (r === true) {
         axios({
           method: 'get',
-          url: v.$config.HOST + `/dokhlab/actions/image/remove_folder.php?name=${v.context.path}`,
+          url: v.$config.HOST + `/dokhlab/actions/dir/remove_folder.php?dir=images&name=${v.context.path}`,
           withCredentials: true
         }).then(response => {
           v.setImages()
+          v.setPapers()
         }).catch(error => {
           console.log(error.response)
           alert(`Delete Image Folder ${v.context.path} failed!`)
@@ -551,17 +638,18 @@ export default {
       return name.substring(name.lastIndexOf('.'))
     },
 
-    renameImage () {
+    renameFile () {
       var v = this
       var oldname = v.context.path
       var newname = v.getFilePath(v.context.path) + '/' + prompt('Please input a new name:')
       if (v.getFileExt(oldname) === v.getFileExt(newname)) {
         axios({
           method: 'get',
-          url: v.$config.HOST + `/dokhlab/actions/image/rename.php?oldname=${oldname}&newname=${newname}`,
+          url: v.$config.HOST + `/dokhlab/actions/dir/rename.php?dir=images&oldname=${oldname}&newname=${newname}`,
           withCredentials: true
         }).then(response => {
           v.setImages()
+          v.setPapers()
         }).catch(error => {
           console.log(error.response)
           alert(`Rename Image ${oldname} failed!`)
@@ -571,16 +659,17 @@ export default {
       }
     },
 
-    deleteImage () {
+    deleteFile () {
       var v = this
       var r = confirm('Are you sure?')
       if (r === true) {
         axios({
           method: 'get',
-          url: v.$config.HOST + `/dokhlab/actions/image/remove.php?name=${v.context.path}`,
+          url: v.$config.HOST + `/dokhlab/actions/dir/remove.php?dir=images&name=${v.context.path}`,
           withCredentials: true
         }).then(response => {
           v.setImages()
+          v.setPapers()
         }).catch(error => {
           console.log(error.response)
           alert(`Delete Image ${v.context.path} failed!`)
@@ -771,6 +860,10 @@ export default {
         for (var i = 0; i < response.data.length; i++) {
           v.tables[name].data.push(response.data[i])
         }
+        if (name === 'mems') {
+//          v.tables[name].data.sort((a, b) => a[v.tables[name].key] - b[v.tables[name].key])
+          v.tables[name].data.sort((a, b) => { return ('' + a.f_name).localeCompare(b.f_name) })
+        }
       }).catch(error => {
         console.log(error.response)
         alert(`Fetch Table ${name} failed!`)
@@ -782,11 +875,26 @@ export default {
 
       axios({
         method: 'get',
-        url: v.$config.HOST + `/dokhlab/actions/images.php`,
+        url: v.$config.HOST + `/dokhlab/actions/dir.php?name=images`,
         withCredentials: true
       }).then(response => {
         v.images = response.data
         console.log(v.images)
+      }).catch(() => {
+        alert(`Fetch Images failed!`)
+      })
+    },
+
+    setPapers () {
+      var v = this
+
+      axios({
+        method: 'get',
+        url: v.$config.HOST + `/dokhlab/actions/dir.php?name=papers`,
+        withCredentials: true
+      }).then(response => {
+        v.papers = response.data
+        console.log(v.papers)
       }).catch(() => {
         alert(`Fetch Images failed!`)
       })
@@ -811,6 +919,7 @@ export default {
     }
 
     v.setImages()
+    v.setPapers()
   },
 
   created () {
@@ -866,7 +975,7 @@ img {
   cursor: pointer;
 }
 
-table tr:nth-child(even) {
+table.table-strip tr:nth-child(even) {
   background-color: #f2f2f2
 }
 

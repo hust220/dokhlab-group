@@ -1,15 +1,27 @@
 <?php
 
+$name = $_GET['name'];
+
 require_once('utils.php');
 
-admin_do(function ($conn) {
-  $name = $_GET['name'];
+if ($name == "events") {
+  anyone_do(function ($conn) {
+    global $name;
+    $query = "select * from $name";
 
-  $query = "select * from $name";
+    $stmt = $conn->prepare($query); 
+    $stmt->execute(); 
+    $row = $stmt->fetchall(PDO::FETCH_ASSOC);
+    print_r(json_encode($row));
+  });
+} else {
+  admin_do(function ($conn) {
+    global $name;
+    $query = "select * from $name";
 
-  $stmt = $conn->prepare($query); 
-  $stmt->execute(); 
-  $row = $stmt->fetchall(PDO::FETCH_ASSOC);
-  print_r(json_encode($row));
-});
-
+    $stmt = $conn->prepare($query); 
+    $stmt->execute(); 
+    $row = $stmt->fetchall(PDO::FETCH_ASSOC);
+    print_r(json_encode($row));
+  });
+}

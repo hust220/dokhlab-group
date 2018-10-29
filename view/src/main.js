@@ -33,6 +33,12 @@ const store = new Vuex.Store({
         align: 'left'
       },
 
+      timeline: {
+        src: '',
+        width: '',
+        height: ''
+      },
+
       home: {
         src: '',
         edit: ''

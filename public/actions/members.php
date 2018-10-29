@@ -9,7 +9,8 @@ try {
     // set the PDO error mode to exception
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $query = 'select * from mems join mem_info where mems.mem_id=mem_info.mem_id';
+//    $query = 'select * from mems left join mem_info on mems.mem_id=mem_info.mem_id';
+    $query = 'select * from mems';
 
     $stmt = $conn->prepare($query); 
     $stmt->execute(); 

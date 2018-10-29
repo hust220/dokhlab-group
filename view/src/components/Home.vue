@@ -3,7 +3,10 @@
   <!-- Timeline -->
   <el-dialog title="Dokhlab" width="1250px" :visible.sync="timelineVisible">
     <div style="padding:0px;margin:0px;width:1220px;height:620px;overflow-x: auto">
+      <!--
       <iframe src='https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=1VnrNiMk_QQC6ZDO3j8zjFDsWBwKM7bZRo_oOt4JbBc8&font=Default&lang=en&initial_zoom=2&width=1200&height=600' width='1200' height='600' webkitallowfullscreen mozallowfullscreen allowfullscreen frameborder='0'></iframe>
+      -->
+      <iframe :src="timeline.src" :width="timeline.width" :height="timeline.height" webkitallowfullscreen mozallowfullscreen allowfullscreen frameborder='0'></iframe>
     </div>
   </el-dialog>
 
@@ -32,7 +35,7 @@
       <a style="cursor:pointer" @click="timelineVisible=true">Read our history.</a>
     </div>
 
-    <div style="margin-top:30px">
+    <div style="margin-top:30px;min-height:700px">
       <div v-html="$store.state.frontConfig.home.src"></div>
     </div>
   </div>
@@ -59,6 +62,23 @@ export default {
   computed: {
     frontConfig () {
       return this.$store.state.frontConfig
+    },
+
+    timeline () {
+      var width = this.$store.state.frontConfig.timeline.width
+      var height = this.$store.state.frontConfig.timeline.height
+
+      var id = ''
+      var found = this.$store.state.frontConfig.timeline.src.match(/https:\/\/docs.google.com\/spreadsheets\/d\/([^/]+)\/edit#/)
+      if (found) {
+        id = found[1]
+      }
+
+      return {
+        src: `https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=${id}&font=Default&lang=en&initial_zoom=2&width=${width}&height=${height}`,
+        width,
+        height
+      }
     }
   },
 
