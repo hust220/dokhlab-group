@@ -1,23 +1,12 @@
 <?php
 
-header("Access-Control-Allow-Origin: *");
+require_once('utils.php');
 
-require_once('config.php');
+anyone_do(function($conn){
+	$query = 'select * from pubs';
 
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
-    // set the PDO error mode to exception
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    $query = 'select * from pubs';
-
-    $stmt = $conn->prepare($query); 
-    $stmt->execute(); 
-    $row = $stmt->fetchall(PDO::FETCH_ASSOC);
-    print_r(json_encode($row));
-}
-catch(PDOException $e) {
-    echo "Check failed: " . $e->getMessage();
-}
-$conn = null;
-
+	$stmt = $conn->prepare($query); 
+	$stmt->execute(); 
+	$row = $stmt->fetchall(PDO::FETCH_ASSOC);
+	print_r(json_encode(utf8ize($row)));
+});

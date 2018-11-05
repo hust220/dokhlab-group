@@ -17,7 +17,7 @@
   </div>
 
   <!--
-  <iframe style="overflow:visible;width:800px;min-height:1000px;border:none" :src="'http://jianopt.com/dokhlab/actions/proxy.php?src='+frontConfig.home.src"></iframe>
+  <iframe style="overflow:visible;width:800px;min-height:1000px;border:none" :src="$config.HOST+'/dokhlab/actions/proxy.php?src='+frontConfig.home.src"></iframe>
   -->
   <div style="width: 750px; padding: 5px 24px 5px 24px; text-align: justify; text-justify: inter-word;background: #EEEEEE; border: 1px solid #BBBBBB; font-size: 13px; font-family: Geneva, arial, helvetica, sans-serif;">
 

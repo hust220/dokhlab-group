@@ -4,7 +4,7 @@ $name = $_GET['name'];
 
 require_once('utils.php');
 
-if ($name == "events") {
+if ($name == "events" || $name == "pubs" || $name == "mems") {
   anyone_do(function ($conn) {
     global $name;
     $query = "select * from $name";
@@ -15,7 +15,8 @@ if ($name == "events") {
     print_r(json_encode($row));
   });
 } else {
-  admin_do(function ($conn) {
+#  admin_do(function ($conn) {
+  anyone_do(function ($conn) {
     global $name;
     $query = "select * from $name";
 

@@ -135,3 +135,28 @@ function admin_do($cb) {
 #
 #}
 
+function utf8ize($d) {
+    if (is_array($d)) {
+        foreach ($d as $k => $v) {
+            $d[$k] = utf8ize($v);
+        }
+    } else if (is_string ($d)) {
+        return utf8_encode($d);
+    }
+    return $d;
+}
+
+function sqlite_fetch_all($queryResultSet){
+	$multiArray = array();
+	$count = 0;
+	while($row = $queryResultSet->fetchArray(SQLITE3_ASSOC)){
+		foreach($row as $i=>$value) {
+			$multiArray[$count][$i] = $value;
+		}
+		$count++;
+	}
+	return $multiArray;
+}
+
+
+
