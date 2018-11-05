@@ -159,9 +159,9 @@
               <el-button @click="previewTimeline" type="info" size="small" plain round>Preview</el-button>
             </div>
             <table>
-              <tr><td>Src</td><td><el-input v-model="timeline.src"></el-input></td></tr>
-              <tr><td>Height</td><td><el-input v-model="timeline.height"></el-input></td></tr>
-              <tr><td>Width</td><td><el-input v-model="timeline.width"></el-input></td></tr>
+              <tr><td>Src</td>    <td><el-input v-model="timeline.src"></el-input></td>    <td width="50px"><a :href="timeline.src" target="_blank">Goto</a></td></tr>
+              <tr><td>Height</td> <td><el-input v-model="timeline.height"></el-input></td> <td></td></tr>
+              <tr><td>Width</td>  <td><el-input v-model="timeline.width"></el-input></td>  <td></td></tr>
             </table>
           </div>
         </div>

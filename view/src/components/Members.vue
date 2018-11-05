@@ -9,6 +9,8 @@
   <div style="display:flex">
     <!-- Navigation -->
     <div style="flex-direction:column;background-color:#EEEEEE;border:1px solid #BBBBBB;padding:5px 10px; width: 250px">
+      <h4 @click="member={}" style="cursor:pointer">Dokhlab</h4>
+
       <h5>Current Members</h5>
       <ul>
         <li @click='member=boss' class="mem">Principal Investigator</li>
@@ -37,36 +39,47 @@
 
     <!-- Member -->
     <div style="flex-direction:column;width:100%;border:1px solid #BBBBBB;padding:10px;margin-left:10px">
-      <div style="display:flex;align-items:center;height:300px">
-        <div style="flex-direction:column;padding:0px 80px;min-width:20px">
-          <ul>
-            <li>Full Name: <b>{{member.f_name}} {{member.m_init}} {{member.l_name}}</b></li>
-            <li>Status :   <b>{{member.designation}}</b></li>
-            <li>Tenure :   <b>{{member.memfrom}} - {{member.memtill}}</b></li>
-            <li>E-mail :   <b>{{member.email}}</b></li>
-            <li>Phone :    <b>{{member.phone}}</b></li>
-          </ul>
-        </div>
-
-        <div style="flex-direction:column;width:135px;height:197px">
-          <img style="width:100%;height:100%" :src="$config.HOST+`/dokhlab/actions/image.php?name=members/${member.f_name}-${member.l_name}.jpg`">
+      <div v-if="JSON.stringify(member)===JSON.stringify({})">
+        <div style="margin:auto auto;width:468px;height:348px">
+          <img style="width:100%;height:100%" :src="$config.HOST+`/dokhlab/actions/image.php?name=members/DG2017-bw.jpg`">
         </div>
       </div>
 
-      <h3>About {{member.f_name}}</h3>
-      <div class="mem-panel">
-        <p v-html="member.info"></p>
+      <div v-else>
+        <div style="display:flex;align-items:center;height:300px">
+          <!-- Member info -->
+          <div style="flex-direction:column;padding:0px 80px;min-width:20px">
+            <ul>
+              <li>Full Name: <b>{{member.f_name}} {{member.m_init}} {{member.l_name}}</b></li>
+              <li>Status :   <b>{{member.designation}}</b></li>
+              <li>Tenure :   <b>{{member.memfrom}} - {{member.memtill}}</b></li>
+              <li>E-mail :   <b>{{member.email}}</b></li>
+              <li>Phone :    <b>{{member.phone}}</b></li>
+            </ul>
+          </div>
+
+          <!-- Member Image -->
+          <div style="flex-direction:column;width:135px;height:197px">
+            <img style="width:100%;height:100%" :src="$config.HOST+`/dokhlab/actions/image.php?name=members/${member.f_name}-${member.l_name}.jpg`">
+          </div>
+        </div>
+
+        <h3>About {{member.f_name}}</h3>
+        <div class="mem-panel">
+          <p v-html="member.info"></p>
+        </div>
+
+        <h3>Education</h3>
+        <div class="mem-panel">
+          <p v-html="member.education"></p>
+        </div>
+
+        <h3>Honors and Awards</h3>
+        <div class="mem-panel">
+          <p v-html="member.awards"></p>
+        </div>
       </div>
 
-      <h3>Education</h3>
-      <div class="mem-panel">
-        <p v-html="member.education"></p>
-      </div>
-
-      <h3>Honors and Awards</h3>
-      <div class="mem-panel">
-        <p v-html="member.awards"></p>
-      </div>
     </div>
   </div>
 </div>
@@ -109,7 +122,7 @@ export default {
         url: v.$config.HOST + '/dokhlab/actions/members.php'
       }).then(response => {
         v.members = response.data
-        v.member = v.boss
+//        v.member = v.boss
       }).catch(() => {
         alert('Fetch members failed!')
       })
