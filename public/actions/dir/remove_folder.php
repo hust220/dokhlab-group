@@ -23,7 +23,7 @@ function deleteDirectory($dir) {
   return rmdir($dir);
 }
 
-require_once('../utils.php');
+require_once(__DIR__.'/../utils.php');
 
 admin_do(function ($conn) {
   $name = $_GET['name'];

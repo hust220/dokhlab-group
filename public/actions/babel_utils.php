@@ -1,6 +1,6 @@
 <?php
 
-require_once('config.php');
+require_once(__DIR__.'/config.php');
 
 function set_file($file, $ext) {
   $ofile = tempnam(__DIR__."/../../daemon/blobs", '').".$ext";

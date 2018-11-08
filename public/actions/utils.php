@@ -44,18 +44,17 @@ function init_head() {
   header("Access-Control-Allow-Credentials: true");
 }
 
+
 function anyone_do($cb) {
   init_head();
   init_session();
 
-  require_once('config.php');
+  require_once(__DIR__.'/config.php');
 
   try {
     $conn = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
     // set the PDO error mode to exception
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-//    echo 'hi0';
 
     $cb($conn);
   } catch(PDOException $e) {
@@ -95,45 +94,6 @@ function admin_do($cb) {
     }
   });
 }
-
-#function admin_do($cb) {
-#  $origin = $_SERVER['HTTP_ORIGIN'];
-#  header("Access-Control-Allow-Origin: $origin");
-#  header("Access-Control-Allow-Credentials: true");
-#
-#  session_start();
-#
-#  require_once('config.php');
-#
-#  try {
-#    $conn = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
-#    // set the PDO error mode to exception
-#    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-#
-#    if (isset($_SESSION['user'])) {
-#      $userid = $_SESSION['user']['id'];
-#      $userlevel = $_SESSION['user']['level'];
-#
-#      if ($userlevel == '10') {
-#        $cb($conn);
-#        header("HTTP/1.1 200 OK");
-#      } else {
-#        header("HTTP/1.1 404 No Permissions");
-#        echo "No permissions!";
-#      }
-#    } else {
-#      header("HTTP/1.1 404 No Permissions");
-#      echo "No permissions!";
-#    }
-#  }
-#  catch(PDOException $e) {
-#    header("HTTP/1.1 404 No Permissions");
-#    echo "Delete failed: " . $e->getMessage();
-#  }
-#
-#  $conn = null;
-#
-#}
 
 function utf8ize($d) {
     if (is_array($d)) {

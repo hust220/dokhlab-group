@@ -1,6 +1,6 @@
 <?php
 
-require_once('babel_utils.php');
+require_once(__DIR__.'/babel_utils.php');
 
 header("Access-Control-Allow-Origin: *");
 

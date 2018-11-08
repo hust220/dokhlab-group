@@ -2,7 +2,7 @@
 
 header("Access-Control-Allow-Origin: *");
 
-require_once('config.php');
+require_once(__DIR__.'/config.php');
 
 try {
     $id = $_GET['id'];

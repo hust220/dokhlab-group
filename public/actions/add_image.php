@@ -1,7 +1,7 @@
 <?php
 
-require_once('utils.php');
-
+require_once(__DIR__.'/utils.php');
+	
 admin_do(function ($conn) {
 
   $name = $_POST['name'];

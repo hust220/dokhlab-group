@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *");
 
 session_start();
 
-require_once('config.php');
+require_once(__DIR__.'/config.php');
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$database", $username, $password);

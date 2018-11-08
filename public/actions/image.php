@@ -2,7 +2,7 @@
 
 #header("Access-Control-Allow-Origin: *");
 
-require_once('utils.php');
+require_once(__DIR__.'/utils.php');
 
 init_head();
 
